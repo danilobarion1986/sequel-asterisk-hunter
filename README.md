@@ -19,11 +19,11 @@ Or install it yourself as:
 The plugin needs to be initialized by the Sequel extension interface. The simplest way to configure plugin globally is adding this line to the initializer:
 
 ```ruby
-Sequel.extension :hunt
+Sequel.extension :asterisk_hunter
 ```
 or
 ```ruby
-Sequel::Database.extension :hunt
+Sequel::Database.extension :asterisk_hunter
 ```
 
 But anyway I recommend reading more about [Sequel extensions system](https://github.com/jeremyevans/sequel/blob/master/doc/extensions.rdoc#sequel-extensions).
@@ -39,7 +39,7 @@ dataset.hunt
 ### Hunting 'SELECT * ...'
 ```ruby
 DB[:my_table].hunt
-  #=> #<Sequel::YourAdapter::Dataset: "SELECT * FROM \"my_table\"">
+  #=> 'Find It!'
 ```
 
 ## Contributing
