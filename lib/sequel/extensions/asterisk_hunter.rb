@@ -12,5 +12,5 @@ module Sequel
     end
   end
 
-  Dataset.register_extension(:hunt, Extensions::AsteriskHunter)
+  Dataset.register_extension(:asterisk_hunter, Extensions::AsteriskHunter)
 end
