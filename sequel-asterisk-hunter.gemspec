@@ -11,14 +11,15 @@ Gem::Specification.new do |spec|
   spec.version       = SequelAsteriskHunter::VERSION
   spec.authors       = ["Danilo Barion Nogueira"]
   spec.email         = "danilo.barion@gmail.com"
-  spec.summary       = "The Sequel extension which allow you to find all your 'SELECT * FROM ...' queries."
-  spec.description   = "The Sequel extension which allow you to find all your 'SELECT * FROM ...' queries."
+  spec.summary       = "Sequel extension which allow you to do some action when find any 'SELECT *' queries."
+  spec.description   = "This extension hooks into `Sequel::Dataset#all` method, doing some predefined action when an `SELECT *` statement is found."
   spec.homepage      = "https://github.com/danilobarion1986/sequel-asterisk-hunter"
   spec.license       = "MIT"
+  spec.required_ruby_version = "~> 2.5"
 
   spec.require_paths = ["lib"]
   spec.files         = Dir.glob("{bin,lib}/**/*") + \
                        %w(LICENSE README.md CHANGELOG.md)
 
-  spec.add_runtime_dependency "sequel", ">= 3.48.0"
+  spec.add_runtime_dependency "sequel", "~> 5.10"
 end
