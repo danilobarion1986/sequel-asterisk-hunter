@@ -1,8 +1,8 @@
 PATH
   remote: .
   specs:
-    sequel-asterisk-hunter (1.0.0)
-      sequel (>= 3.48.0)
+    sequel-asterisk-hunter (1.1.0)
+      sequel (~> 5.10)
 
 GEM
   remote: https://rubygems.org/
