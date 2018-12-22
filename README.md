@@ -1,6 +1,6 @@
 # SequelAsteriskHunter
 
-This extension adds the `Sequel::Dataset#hunt` method, which...
+This extension hooks into `Sequel::Dataset#all` method, doing some predefined action when an `SELECT *` statement is found.
 
 ## Installation
 
@@ -16,7 +16,9 @@ Or install it yourself as:
 
     $ gem install sequel-asterisk-hunter
 
-The plugin needs to be initialized by the Sequel extension interface. The simplest way to configure plugin globally is adding this line to the initializer:
+## Usage
+
+The extension needs to be initialized by the Sequel extension interface. The simplest way to configure it globally is adding this line to the initializer:
 
 ```ruby
 Sequel.extension :asterisk_hunter
@@ -26,20 +28,42 @@ or
 Sequel::Database.extension :asterisk_hunter
 ```
 
-But anyway I recommend reading more about [Sequel extensions system](https://github.com/jeremyevans/sequel/blob/master/doc/extensions.rdoc#sequel-extensions).
-
-## Usage
+However, if you are using any framework (like Rails) where your Sequel::Database instance already exists, you should use `DB.extension :asterisk_hunter`, where `DB` is a reference to your Sequel::Database, like this:
 
 ```ruby
-dataset.hunt
+Sequel::Model.db.extension :asterisk_hunter
 ```
 
-## Usage examples
+You could define an action to be executed when any `SELECT *` statement is found. It must be any callable object.
 
-### Hunting 'SELECT * ...'
+### Examples
+
+With the default action:
 ```ruby
-DB[:my_table].hunt
-  #=> 'Find It!'
+DB[:my_table].all
+  #=> "Find 'SELECT *' in query!"
+  #=> [<All your objects and its attributes/columns>]
+```
+
+With some custom actions defined:
+- Raising an error:
+```ruby
+action = -> { raise StandardError, "Find 'SELECT *' in query!" }
+Sequel::Extensions::AsteriskHunter.define_action(action)
+
+DB[:my_table].all
+  #=> StandardError("Find 'SELECT *' in query!")
+  # (Your query is not executed...)
+```
+
+- Logging:
+```ruby
+action = -> { Rails.logger.warn("Find 'SELECT *' in query!") }
+Sequel::Extensions::AsteriskHunter.define_action(action)
+
+DB[:my_table].all
+  #=> "Find 'SELECT *' in query!"
+  #=> [<All your objects and its attributes/columns>]
 ```
 
 ## Contributing
