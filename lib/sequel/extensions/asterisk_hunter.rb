@@ -1,26 +1,33 @@
 # frozen_string_literal: true
 
-require "sequel"
+require 'sequel'
 
 module Sequel
   module Extensions
     module AsteriskHunter
-      @@action = -> { puts "Find 'SELECT *' in query!" }
+      class << self
+        attr_accessor :action
+
+        def define_action(user_action)
+          raise TypeError, 'Action parameter must be a callable object!' unless user_action.respond_to?(:call)
+          AsteriskHunter.action = user_action
+        end
+      end
+
+      class DefaultAction
+        def self.call; end
+        def call; end
+      end
 
       def fetch_rows(sql)
         hunt(sql)
         super
       end
 
-      def self.define_action(action)
-        raise TypeError, 'Action parameter must be a callable object!' unless action.respond_to?(:call)
-        @@action = action
-      end
-
       private
 
       def hunt(sql)
-        @@action.call if sql.include?('SELECT *')
+        AsteriskHunter.action&.call || AsteriskHunter::DefaultAction if sql.include?('SELECT *')
       end
     end
   end
