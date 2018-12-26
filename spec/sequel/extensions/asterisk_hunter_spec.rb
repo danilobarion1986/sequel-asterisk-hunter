@@ -4,72 +4,85 @@ Sequel.extension :asterisk_hunter
 
 describe Sequel::Extensions::AsteriskHunter do
   before { Sequel::Dataset.send(:include, Sequel::Extensions::AsteriskHunter) }
-  let(:db) { Sequel.mock }
+  subject { dataset.send(:hunt, dataset.inspect) }
+  let(:result) { 0 }
 
   describe "#hunt" do
     context 'when the dataset contains some "SELECT *" statement' do
-      subject { db[:users] }
+      let(:dataset) { Sequel.mock[:users] }
 
       context 'when no action is defined for the user' do
-        it 'returns self' do
-          expect(subject.send(:hunt)).to eql(subject)
+        it 'return AsteriskHunter::DefaultAction class' do
+          result = subject
+
+          expect(result).to eql(described_class::DefaultAction)
         end
       end
 
       context 'when some action is defined for the user' do
-        context 'when the action must interrupt the flow' do
+        context 'when the action interrupt the execution flow' do
           before do
             action = -> { raise StandardError, 'Interrupted' }
             described_class.define_action(action)
           end
 
           it 'interrupts the flow' do
-            expect { subject.send(:hunt) }.to raise_error(StandardError, 'Interrupted')
+            expect { subject }.to raise_error(StandardError, 'Interrupted')
           end
         end
 
-        context 'when the action do not interrupt the flow' do
+        context 'when the action do not interrupt the execution flow' do
+          let(:magic_number) { 5 }
+
           before do
-            action = -> { 'Not Interrupted' }
+            action = -> { magic_number }
             described_class.define_action(action)
           end
 
-          it 'returns self' do
-            expect(subject.send(:hunt)).to eql(subject)
+          it 'is called and do not interrupt the execution flow' do
+            result = subject
+
+            expect(result).to eql(magic_number)
           end
         end
       end
     end
 
     context 'when the dataset do not contains any "SELECT *" statement' do
-      subject { db[:users].select(:id) }
+      let(:dataset) { Sequel.mock[:users].select(:id) }
 
       context 'when no action is defined for the user' do
-        it 'returns self' do
-          expect(subject.send(:hunt)).to eql(subject)
+        it 'do not return AsteriskHunter::DefaultAction class' do
+          result = subject
+
+          expect(result).to eql(nil)
         end
       end
 
       context 'when some action is defined for the user' do
-        context 'when the action must interrupt the flow' do
+        context 'when the action interrupt the execution flow' do
           before do
             action = -> { raise StandardError, 'Interrupted' }
             described_class.define_action(action)
           end
 
           it 'do not interrupts the flow' do
-            expect { subject.send(:hunt) }.not_to raise_error
+            expect { subject }.not_to raise_error
           end
         end
 
-        context 'when the action do not interrupt the flow' do
+        context 'when the action do not interrupt the execution flow' do
+          let(:magic_number) { 42 }
+
           before do
-            action = -> { 'Not Interrupted' }
+            action = -> { magic_number }
             described_class.define_action(action)
           end
 
-          it 'returns self' do
-            expect(subject.send(:hunt)).to eql(subject)
+          it 'is not called and do not interrupt the execution flow' do
+            result = subject
+
+            expect(result).to eql(nil)
           end
         end
       end
