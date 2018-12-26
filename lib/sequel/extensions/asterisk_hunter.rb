@@ -7,8 +7,8 @@ module Sequel
     module AsteriskHunter
       @@action = -> { puts "Find 'SELECT *' in query!" }
 
-      def all
-        hunt
+      def fetch_rows(sql)
+        hunt(sql)
         super
       end
 
@@ -19,9 +19,8 @@ module Sequel
 
       private
 
-      def hunt
-        @@action.call if self.inspect.include?('SELECT *')
-        self
+      def hunt(sql)
+        @@action.call if sql.include?('SELECT *')
       end
     end
   end
