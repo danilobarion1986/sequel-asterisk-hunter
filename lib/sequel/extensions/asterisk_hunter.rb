@@ -6,11 +6,11 @@ module Sequel
   module Extensions
     module AsteriskHunter
       class << self
-        attr_accessor :action
+        attr_accessor :user_action
 
-        def define_action(user_action)
+        def action=(user_action)
           raise TypeError, 'Action parameter must be a callable object!' unless user_action.respond_to?(:call)
-          AsteriskHunter.action = user_action
+          AsteriskHunter.user_action = user_action
         end
       end
 
@@ -27,7 +27,11 @@ module Sequel
       private
 
       def hunt(sql)
-        AsteriskHunter.action&.call || AsteriskHunter::DefaultAction if sql.include?('SELECT *')
+        AsteriskHunter.user_action&.call || AsteriskHunter::DefaultAction.call if execute_action?
+      end
+
+      def execute_action?
+        sql.include?('SELECT *')
       end
     end
   end

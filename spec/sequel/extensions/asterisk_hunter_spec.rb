@@ -15,7 +15,7 @@ describe Sequel::Extensions::AsteriskHunter do
         it 'return AsteriskHunter::DefaultAction class' do
           result = subject
 
-          expect(result).to eql(described_class::DefaultAction)
+          expect(result).to eql(nil)
         end
       end
 
@@ -23,7 +23,7 @@ describe Sequel::Extensions::AsteriskHunter do
         context 'when the action interrupt the execution flow' do
           before do
             action = -> { raise StandardError, 'Interrupted' }
-            described_class.define_action(action)
+            described_class.action = action
           end
 
           it 'interrupts the flow' do
@@ -36,7 +36,7 @@ describe Sequel::Extensions::AsteriskHunter do
 
           before do
             action = -> { magic_number }
-            described_class.define_action(action)
+            described_class.action = action
           end
 
           it 'is called and do not interrupt the execution flow' do
@@ -63,7 +63,7 @@ describe Sequel::Extensions::AsteriskHunter do
         context 'when the action interrupt the execution flow' do
           before do
             action = -> { raise StandardError, 'Interrupted' }
-            described_class.define_action(action)
+            described_class.action = action
           end
 
           it 'do not interrupts the flow' do
@@ -76,7 +76,7 @@ describe Sequel::Extensions::AsteriskHunter do
 
           before do
             action = -> { magic_number }
-            described_class.define_action(action)
+            described_class.action = action
           end
 
           it 'is not called and do not interrupt the execution flow' do
@@ -89,19 +89,19 @@ describe Sequel::Extensions::AsteriskHunter do
     end
   end
 
-  describe '.define_action' do
+  describe '.action=' do
     context 'when any not callable object is passed as argument' do
       it 'raises TypeError' do
         expect do
-          described_class.define_action(1)
+          described_class.action = 1
         end.to raise_error(TypeError, 'Action parameter must be a callable object!')
       end
     end
 
     context 'when any callable object is passed as argument' do
-      it 'not raises error' do
-        expect(described_class.define_action(lambda {})).not_to raise_error
-      end
+      subject { described_class.action = lambda {} }
+
+      it { is_expected.not_to raise_error }
     end
   end
 end
