@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'bundler/setup'
-require "simplecov"
+require 'simplecov'
 SimpleCov.start
 
-require "sequel-asterisk-hunter"
-require "pry"
+require 'sequel-asterisk-hunter'
+require 'pry'
 require 'sequel/adapters/mock'
 
 Dir['./spec/support/*'].each(&method(:require))

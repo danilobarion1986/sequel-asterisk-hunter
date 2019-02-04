@@ -1,4 +1,6 @@
-require_relative "../../spec_helper"
+# frozen_string_literal: true
+
+require_relative '../../spec_helper'
 
 Sequel.extension :asterisk_hunter
 
@@ -7,7 +9,7 @@ describe Sequel::Extensions::AsteriskHunter do
   subject { dataset.send(:hunt, dataset.inspect) }
   let(:result) { 0 }
 
-  describe "#hunt" do
+  describe '#hunt' do
     context 'when the dataset contains some "SELECT *" statement' do
       let(:dataset) { Sequel.mock[:users] }
 
