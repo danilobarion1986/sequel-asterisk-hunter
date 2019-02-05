@@ -6,7 +6,7 @@ Sequel.extension :asterisk_hunter
 
 describe Sequel::Extensions::AsteriskHunter do
   before { Sequel::Dataset.send(:include, Sequel::Extensions::AsteriskHunter) }
-  subject { dataset.send(:hunt, dataset.inspect) }
+  subject { dataset.send(:hunt) }
   let(:result) { 0 }
 
   describe '#hunt' do
@@ -17,7 +17,7 @@ describe Sequel::Extensions::AsteriskHunter do
         it 'return AsteriskHunter::DefaultAction class' do
           result = subject
 
-          expect(result).to eql(described_class::DefaultAction)
+          expect(result).to eql(described_class::DefaultAction.call)
         end
       end
 
