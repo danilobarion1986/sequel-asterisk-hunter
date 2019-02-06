@@ -14,10 +14,10 @@ describe Sequel::Extensions::AsteriskHunter do
       let(:dataset) { Sequel.mock[:users] }
 
       context 'when no action is defined for the user' do
-        it 'return AsteriskHunter::DefaultAction class' do
+        it 'return nil' do
           result = subject
 
-          expect(result).to eql(described_class::DefaultAction.call)
+          expect(result).to eql(nil)
         end
       end
 
@@ -54,7 +54,7 @@ describe Sequel::Extensions::AsteriskHunter do
       let(:dataset) { Sequel.mock[:users].select(:id) }
 
       context 'when no action is defined for the user' do
-        it 'do not return AsteriskHunter::DefaultAction class' do
+        it 'return nil' do
           result = subject
 
           expect(result).to eql(nil)
@@ -81,7 +81,7 @@ describe Sequel::Extensions::AsteriskHunter do
             described_class.define_action(action)
           end
 
-          it 'is not called and do not interrupt the execution flow' do
+          it 'return nil' do
             result = subject
 
             expect(result).to eql(nil)
@@ -102,7 +102,7 @@ describe Sequel::Extensions::AsteriskHunter do
 
     context 'when any callable object is passed as argument' do
       it 'not raises error' do
-        expect(described_class.define_action(lambda {})).not_to raise_error
+        expect(described_class.define_action(-> {})).not_to raise_error
       end
     end
   end
