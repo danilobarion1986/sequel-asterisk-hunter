@@ -1,5 +1,7 @@
 # SequelAsteriskHunter
 
+[![Maintainability](https://api.codeclimate.com/v1/badges/45c9c0861e32902a4b0a/maintainability)](https://codeclimate.com/github/danilobarion1986/sequel-asterisk-hunter/maintainability)
+
 This extension hooks into `Sequel::Dataset#all` method, doing some predefined action when an `SELECT *` statement is found.
 
 ## Installation
