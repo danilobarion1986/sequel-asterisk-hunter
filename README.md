@@ -2,7 +2,7 @@
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/45c9c0861e32902a4b0a/maintainability)](https://codeclimate.com/github/danilobarion1986/sequel-asterisk-hunter/maintainability)
 
-This extension hooks into `Sequel::Dataset#all` method, doing some predefined action when an `SELECT *` statement is found.
+This extension hooks into `Sequel::Dataset#fetch_rows` method, doing some predefined action when an `SELECT *` statement is found.
 
 ## Installation
 
@@ -20,7 +20,8 @@ Or install it yourself as:
 
 ## Usage
 
-The extension needs to be initialized by the Sequel extension interface. The simplest way to configure it globally is adding this line to the initializer:
+The extension needs to be initialized by the Sequel extension interface. 
+The simplest way to configure it globally is by adding this line to the initializer:
 
 ```ruby
 Sequel.extension :asterisk_hunter
